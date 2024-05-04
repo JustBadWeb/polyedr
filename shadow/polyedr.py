@@ -54,13 +54,13 @@ class Edge:
         # Нахождение одномерной тени на ребре
         shade = Segment(Edge.SBEG, Edge.SFIN)
         for u, v in zip(facet.vertexes, facet.v_normals()):
-            shade.intersect(self.intersect_edge_with_normal(u, v, True))
+            shade.intersect(self.intersect_edge_with_normal(u, v))
             if shade.is_degenerate():
                 return
 
         shade.intersect(
             self.intersect_edge_with_normal(
-                facet.vertexes[0], facet.h_normal(), False))
+                facet.vertexes[0], facet.h_normal()))
         if shade.is_degenerate():
             return
         # Преобразование списка «просветов», если тень невырождена
@@ -90,21 +90,12 @@ class Edge:
 
     # Пересечение ребра с полупространством, задаваемым точкой (a)
     # на плоскости и вектором внешней нормали (n) к ней
-    def intersect_edge_with_normal(self, a, n, vert: bool):
+    def intersect_edge_with_normal(self, a, n):
         f0, f1 = n.dot(self.beg - a), n.dot(self.fin - a)
-
-        """if edge is in verical facet it's invisible"""
-        if vert:
-            if f0 > 0.0 and f1 > 0.0:
-                return Segment(Edge.SFIN, Edge.SBEG)
-            if f0 <= 0.0 and f1 <= 0.0:
-                return Segment(Edge.SBEG, Edge.SFIN)
-        else:
-            if f0 >= 0.0 and f1 >= 0.0:
-                return Segment(Edge.SFIN, Edge.SBEG)
-            if f0 < 0.0 and f1 < 0.0:
-                return Segment(Edge.SBEG, Edge.SFIN)
-
+        if f0 >= 0.0 and f1 >= 0.0:
+            return Segment(Edge.SFIN, Edge.SBEG)
+        if f0 < 0.0 and f1 < 0.0:
+            return Segment(Edge.SBEG, Edge.SFIN)
         x = - f0 / (f1 - f0)
         return Segment(Edge.SBEG, x) if f0 < 0.0 else Segment(x, Edge.SFIN)
 
@@ -195,10 +186,6 @@ class Polyedr:
         for e in self.edges:
             for f in self.facets:
                 e.shadow(f)
-            print(e.beg.z)
-            for g in e.gaps:
-                print(g)
-            print()
             for s in e.gaps:
                 tk.draw_line(e.r3(s.beg), e.r3(s.fin))
             """Проверяем и прибавляем"""
