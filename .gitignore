@@ -1,6 +1,6 @@
-/common/__pycache__
-/shadow/__pycache__
-/tests/__pycache__
-/htmlcov
-/.venv
+common/__pycache__/
+shadow/__pycache__/
+tests/__pycache__/
+htmlcov/
+.venv
 .coverage
