@@ -7,19 +7,19 @@ SIZE = 900
 SCALE = 1.5
 
 
-def x(p): # pragma: no cover
+def x(p):  # pragma: no cover
     """ преобразование x-координаты """
     return SIZE / 2 + SCALE * p.x
 
 
-def y(p): # pragma: no cover
+def y(p):  # pragma: no cover
     """" преобразование y-координаты """
     return SIZE / 2 - SCALE * p.y
 
 
 # pragma: no cover
 # pragma: no cover
-class TkDrawer: # pragma: no cover
+class TkDrawer:  # pragma: no cover
     """ Графический интерфейс """
 
     # Конструктор
@@ -47,7 +47,7 @@ class TkDrawer: # pragma: no cover
         self.root.update()
 
 
-if __name__ == "__main__": # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
 
     import time
     from r3 import R3

@@ -31,9 +31,6 @@ class Segment:
             self.beg, self.fin if self.fin < other.beg else other.beg),
             Segment(self.beg if self.beg > other.fin else other.fin, self.fin)]
 
-    def __str__(self):
-        return f"{self.beg}, {self.fin}"
-
 
 class Edge:
     """ Ребро полиэдра """
@@ -69,15 +66,18 @@ class Edge:
             s for s in reduce(add, gaps, []) if not s.is_degenerate()]
 
     """begin"""
-    def length(self) -> float:
+    def length(self, c) -> float:
         return sqrt((self.beg.x - self.fin.x) ** 2 +
                     (self.beg.y - self.fin.y) ** 2 +
-                    (self.beg.z - self.fin.z) ** 2)
+                    (self.beg.z - self.fin.z) ** 2) / c
 
-    def is_center_in_area(self):
-        center = (self.beg + self.fin) * (1 / 2)
+    def center(self) -> R3:
+        return (self.beg + self.fin) * (1 / 2)
+
+    def is_center_in_area(self, c):
         # distance from projection on Oxy to x=2
-        return abs(2 - center.x) < 1
+        # умножаем на коэф гомотетии, т.к. точки уже изменены
+        return abs(2 * c - self.center().x) < 1 * c
 
     def is_invisible(self) -> bool:
         return not self.gaps
@@ -156,7 +156,7 @@ class Polyedr:
                     # обрабатываем первую строку; buf - вспомогательный массив
                     buf = line.split()
                     # коэффициент гомотетии
-                    c = float(buf.pop(0))
+                    self.c = float(buf.pop(0))
                     # углы Эйлера, определяющие вращение
                     alpha, beta, gamma = (float(x) * pi / 180.0 for x in buf)
                 elif i == 1:
@@ -166,7 +166,7 @@ class Polyedr:
                     # задание всех вершин полиэдра
                     x, y, z = (float(x) for x in line.split())
                     self.vertexes.append(R3(x, y, z).rz(
-                        alpha).ry(beta).rz(gamma) * c)
+                        alpha).ry(beta).rz(gamma) * self.c)
                 else:
                     # вспомогательный массив
                     buf = line.split()
@@ -189,9 +189,5 @@ class Polyedr:
             for s in e.gaps:
                 tk.draw_line(e.r3(s.beg), e.r3(s.fin))
             """Проверяем и прибавляем"""
-            if e.is_invisible() and e.is_center_in_area():
-                self.X += e.length()
-
-        print(f"сумма длин проекций полностью невидимых рёбер, "
-              f"проекция центра которых находится на расстоянии "
-              f"строго меньше 1 от прямой x=2 = {self.X}")
+            if e.is_invisible() and e.is_center_in_area(self.c):
+                self.X += e.length(self.c)

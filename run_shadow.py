@@ -3,7 +3,6 @@ import os
 from time import time
 from common.tk_drawer import TkDrawer
 from shadow.polyedr import Polyedr
-from os import listdir
 
 
 tk = TkDrawer()
@@ -12,7 +11,11 @@ try:
         print("=============================================================")
         print(f"Начало работы с полиэдром '{name}'")
         start_time = time()
-        Polyedr(f"data/{name}").draw(tk)
+        p = Polyedr(f"data/{name}")
+        p.draw(tk)
+        print(f"сумма длин проекций полностью невидимых рёбер, "
+              f"проекция центра которых находится на расстоянии "
+              f"строго меньше 1 от прямой x=2 = {p.X}")
         delta_time = time() - start_time
         print(f"Изображение полиэдра '{name}' заняло {delta_time} сек.")
         input("Hit 'Return' to continue -> ")
