@@ -2,7 +2,6 @@ from math import pi, sqrt
 from functools import reduce
 from operator import add
 from common.r3 import R3
-from common.tk_drawer import TkDrawer
 
 
 class Segment:
@@ -144,7 +143,7 @@ class Polyedr:
     # Параметры конструктора: файл, задающий полиэдр
     def __init__(self, file):
         """Характеристика, которую требуется рассчитать по заданию"""
-        self.X = 0
+        self.X = .0
 
         # списки вершин, рёбер и граней полиэдра
         self.vertexes, self.edges, self.facets = [], [], []
